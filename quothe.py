@@ -3,20 +3,22 @@ import scipy as sp
 from typing import List, Tuple, Callable
 from notes import note_freq
 
-
 class Generator:
     def __init__(self, fn: Callable = np.sin, rate: int = 44100):
         self.rate = rate
         self.fn = fn
+        self.attack = (1, 1/32)
+        self.decay = (3/4, 1/8)
+        self.release = (0, 1/64)
 
     def signal(self, frequency: float, fn: Callable = None, duration: float = 1):
         fn = fn or self.fn
         n = int(duration * self.rate)
-        t = np.linspace(0, 1*duration, int(self.rate*duration))
+        t = np.linspace(0, 1 * duration, int(self.rate * duration))
         s = fn(t * 2 * np.pi * frequency)
-        trap = self._trapezoid(n)
-        trapped = np.multiply(s, trap)
-        return trapped
+        filter = self._adsr(n, attack=self.attack, decay=self.decay, release=self.release)
+        filtered = np.multiply(s, filter)
+        return filtered
 
     def chord(self, notes: List[str], fn: Callable = None, duration: float = 1):
         fn = fn or self.fn
@@ -42,3 +44,22 @@ class Generator:
         flat = np.ones(length - 2 * slope)
         fall = np.linspace(1, 0, slope)
         return np.concatenate([rise, flat, fall])
+
+    def _adsr(
+            self, length: int, attack: Tuple[float, float], decay: Tuple[float, float], release: Tuple[float, float]
+    ):
+        """This isn't reeeeally an ADSR filter, but it's inspired by it."""
+        (att_l, att_n) = (attack[0], int(length*attack[1]))
+        (dec_l, dec_n) = (decay[0], int(length*decay[1]))
+        (rel_l, rel_n) = (release[0], int(length*release[1]))
+        sus_n = length - (att_n + dec_n + rel_n)
+
+        att = np.linspace(0, att_l, att_n)
+        dec = np.linspace(att_l, dec_l, dec_n)
+        sus = np.linspace(dec_l, dec_l, sus_n)
+        rel = np.linspace(dec_l, rel_l, rel_n)
+
+        adsr = np.concatenate([att, dec, sus, rel])
+        assert len(adsr) == length
+        return adsr
+
