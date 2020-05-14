@@ -22,11 +22,11 @@ class Scale:
         return self.notes[octave, note]
 
     def chord(self, root: int, octave_shift: int = 0) -> Tuple:
-        root = self[octave_shift, interval]
-        third = self[octave_shift, interval+2]
-        fifth = self[octave_shift, interval+4]
-        seventh = self[octave_shift, interval+6]
-        return np.array((root, third, fifth, seventh))
+        unison = self[octave_shift, root]
+        third = self[octave_shift, root+2]
+        fifth = self[octave_shift, root+4]
+        seventh = self[octave_shift, root+6]
+        return np.array((unison, third, fifth, seventh))
 
     def __getitem__(self, index):
         if type(index) == tuple:
@@ -35,7 +35,6 @@ class Scale:
             octave, interval = 0, index
         add_octave, interval = divmod(interval, self.scale_length)
         octave += add_octave
-        print(f"{octave=}, {interval=}")
         return _all_notes[self.root + self.intervals[interval] + (octave * 12)]
 
 
