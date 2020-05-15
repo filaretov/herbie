@@ -2,7 +2,7 @@ import librosa
 import numpy as np
 import IPython.display as ipd
 
-from filters import normalize
+from herbie.filters import normalize
 
 
 def play(a: np.array, rate: int = 44100, volume: float = 0.2, repeat: int = 1, autoplay=True):

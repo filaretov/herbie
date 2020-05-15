@@ -11,11 +11,10 @@ modes = {
 class Scale:
     def __init__(self, root: str = "C", mode: str = "major", octave: int = 4):
         self.mode = mode
+        self.octave = octave
         self.root = root_index[root] + (octave * 12)
         self.intervals = modes[mode]
         self.scale_length = len(self.intervals)
-        assert 0 <= octave <= 8
-        self.octave = octave
 
     def note(self, note: int, octave: int = None):
         octave = octave or self.octave
