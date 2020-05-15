@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List
 
 
 def clip(a: np.array, threshold: float, mix: float = 1) -> np.array:
@@ -15,6 +15,9 @@ def clip(a: np.array, threshold: float, mix: float = 1) -> np.array:
 
 
 def normalize(a: np.array) -> np.array:
+    max = np.max(a)
+    if max == 0:
+        return a
     return a / np.max(a)
 
 
@@ -42,3 +45,18 @@ def adsr(
 
     f = np.multiply(s, adsr)
     return mix * f + (1 - mix) * s
+
+def masher(parts: List[np.array]) -> np.array:
+    mlen = np.max([len(p) for p in parts])
+    padded = []
+    for p in parts:
+        padded.append(np.pad(p, (0, mlen - len(p))))
+    mashed = np.sum(padded, axis=0)
+    return filters.normalize(mashed)
+
+def pad(parts: List[np.array]) -> np.array:
+    mlen = np.max([len(p) for p in parts])
+    padded = []
+    for p in parts:
+        padded.append(np.pad(p, (0, mlen - len(p))))
+    return padded
