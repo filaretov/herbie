@@ -13,10 +13,14 @@ all_notes = "CDEFGAB"
 
 
 class Scale:
-    def __init__(self, root: str = "C", mode: str = "major", octave: int = 4):
+    def __init__(self, root: str = "C", mode: str = "major", octave: int = 4, bpm: float = 120, beat_note: int = 4, default_note: int = 4):
+        beat_note_duration = (60 / bpm)
+        self.whole_note_duration = beat_note_duration * beat_note
+        self.default_note = 4
         self.mode = mode
         self.octave = octave
         self.root = root
+        self.bpm = bpm
         self.root_index = root_index[root] + (octave * 12)
         self.intervals = modes[mode]
 
@@ -25,8 +29,6 @@ class Scale:
         self.note_index = {note: index for index, note in enumerate(self.notes)}
 
         self.scale_length = len(self.intervals)
-
-        self.default_duration = 4
 
     def note_from_root(self, note_name: str, octave: int = 0) -> float:
         if note_name == "r":
@@ -47,7 +49,7 @@ class Scale:
                 self.note_from_root(note_name, octave_shift)
                 for note_name, octave_shift in notelets
             ]
-            duration = 1 / duration
+            duration = self.whole_note_duration / duration
             note_sequence.append((frequencies, duration))
         return note_sequence
 
@@ -57,7 +59,7 @@ class Scale:
             duration = float(r["duration"])
         elif r := parse("{note_spec}", token):
             note_spec = r["note_spec"]
-            duration = float(self.default_duration)
+            duration = float(self.default_note)
         else:
             raise InvalidNoteTokenException(f"'{token}' is not a valid token.")
         notelets = self.parse_note_spec_token(note_spec)
