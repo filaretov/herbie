@@ -21,14 +21,16 @@ class Scale:
         self.octave = octave
         self.root = root
         self.bpm = bpm
-        self.root_index = root_index[root] + (octave * 12)
         self.intervals = modes[mode]
+        self.scale_length = len(self.intervals)
 
         note_index = all_notes.find(root)
         self.notes = all_notes[note_index:] + all_notes[:note_index]
         self.note_index = {note: index for index, note in enumerate(self.notes)}
 
-        self.scale_length = len(self.intervals)
+    @property
+    def root_index(self):
+        return ROOT_INDEX[self.root] + (self.octave * 12)
 
     def note_from_root(self, note_name: str, octave: int = 0) -> float:
         if note_name == "r":
@@ -225,7 +227,7 @@ note_frequencies = [
 ]
 
 
-root_index = {
+ROOT_INDEX = {
     "C": 0,
     "C#": 1,
     "Db": 1,
