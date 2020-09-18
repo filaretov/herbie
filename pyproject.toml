@@ -1,10 +1,21 @@
+[tool.poetry]
+name = "herbie"
+version = "2020.9.0"
+description = "Making music by suboptimal means."
+authors = ["Hristo Filaretov <h.filaretov@campus.tu-berlin.de>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+tensorflow-cpu = "^2.3.0"
+pandas = "^1.1.2"
+ipython = "^7.18.1"
+ipykernel = "^5.3.4"
+scikit-learn = "^0.23.2"
+matplotlib = "^3.3.2"
+
+[tool.poetry.dev-dependencies]
+
 [build-system]
-requires = ["flit_core >=2,<4"]
-build-backend = "flit_core.buildapi"
-
-[tool.flit.metadata]
-module = "herbie"
-author = "Hristo Filaretov"
-author-email = "h.filaretov@campus.tu-berlin.de"
-classifiers = ["License :: OSI Approved :: MIT License"]
-
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
