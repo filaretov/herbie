@@ -16,7 +16,7 @@ class Scale:
     def __init__(self, root: str = "C", mode: str = "major", octave: int = 4, bpm: float = 120, beat_note: int = 4, default_note: int = 4):
         beat_note_duration = (60 / bpm)
         self.whole_note_duration = beat_note_duration * beat_note
-        self.default_note = 4
+        self.default_note = default_note
         self.mode = mode
         self.octave = octave
         self.root = root
@@ -90,7 +90,7 @@ class Scale:
         seventh = self[octave_shift, root + 6]
         return (unison, third, fifth, seventh)
 
-    def __getitem__(self, index):
+    def __getitem__(self, interval):
         add_octave, interval = divmod(interval, self.scale_length)
         octave += add_octave
         return note_frequencies[
