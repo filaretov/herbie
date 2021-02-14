@@ -13,8 +13,16 @@ all_notes = "CDEFGAB"
 
 
 class Scale:
-    def __init__(self, root: str = "C", mode: str = "major", octave: int = 4, bpm: float = 120, beat_note: int = 4, default_note: int = 4):
-        beat_note_duration = (60 / bpm)
+    def __init__(
+        self,
+        root: str = "C",
+        mode: str = "major",
+        octave: int = 4,
+        bpm: float = 120,
+        beat_note: int = 4,
+        default_note: int = 4,
+    ):
+        beat_note_duration = 60 / bpm
         self.whole_note_duration = beat_note_duration * beat_note
         self.default_note = default_note
         self.mode = mode
@@ -82,13 +90,6 @@ class Scale:
             note = token
             octave_shift = 0
         return note, octave_shift
-
-    def chord(self, root: int, octave_shift: int = 0) -> Tuple:
-        unison = self[octave_shift, root]
-        third = self[octave_shift, root + 2]
-        fifth = self[octave_shift, root + 4]
-        seventh = self[octave_shift, root + 6]
-        return (unison, third, fifth, seventh)
 
     def __getitem__(self, interval):
         add_octave, interval = divmod(interval, self.scale_length)
